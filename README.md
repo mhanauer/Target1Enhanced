@@ -545,6 +545,688 @@ mean.sd.out= mi.meld(mean.out, sd.out)
 mean.sd.out
 
 ```
+#####
+Differences in pre and post across treatments won't work, because cannot take a difference among two treatments with unequal sizes 
+
+################################################
+Multilevel with treatment 1 and 2 only with imputed data
+################################################
+```{r}
+datAnalysisAll = lapply(1:m, function(x){datAdultAnalysisImpute$imputations[[x]]})
+
+datAnalysisT12 = NULL
+
+for(i in 1:m){
+  datAnalysisT12[[i]] = subset(datAnalysisAll[[i]], Treatment == 1 | Treatment == 2)
+}
+
+
+```
+################
+RAS T1 versus T2
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(RASTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT12[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+INQ T1 versus T2
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(INQTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT12[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+SSMI T1 versus T2
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(SSMITotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT12[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+SIS T1 versus T2
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(SISTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT12[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################################################
+Multilevel with treatment 1 and 3 only with imputed data
+################################################
+```{r}
+datAnalysisAll = lapply(1:m, function(x){datAdultAnalysisImpute$imputations[[x]]})
+
+datAnalysisT13 = NULL
+
+for(i in 1:m){
+  datAnalysisT13[[i]] = subset(datAnalysisAll[[i]], Treatment == 1 | Treatment == 3)
+}
+
+
+```
+################
+RAS T1 versus T3
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(RASTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT13[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+INQ T1 versus T3
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(INQTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT13[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+SSMI T1 versus T3
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(SSMITotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT13[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+################
+SIS T1 versus T3
+################
+```{r}
+output = list()
+outputReg = list()
+coef_output =  NULL
+se_output = NULL
+rSquared = NULL
+stdBeta = NULL
+stdCoef = NULL
+stdSe = NULL
+
+
+for(i in 1:m){
+  output[[i]] = lmer(SISTotalScore ~ Time*Treatment + (1 | ID), data  = datAnalysisT13[[i]])
+  outputReg[[i]] = output[[i]]
+  stdBeta[[i]] = std.coef(output[[i]], partial.sd = TRUE) 
+  stdCoef[[i]] = stdBeta[[i]][2,1]
+  stdSe[[i]] = stdBeta[[i]][2,2]
+  rSquared[[i]] = r.squaredGLMM(output[[i]])
+  output[[i]] = summary(output[[i]])
+  coef_output[[i]] = output[[i]]$coefficients[,1]
+  se_output[[i]] = output[[i]]$coefficients[,2]
+}
+coef_output = data.frame(coef_output)
+coef_output
+quickTrans = function(x){
+  x = data.frame(x)
+  x = t(x)
+  x = data.frame(x)
+}
+coef_output = quickTrans(coef_output)
+se_output = quickTrans(se_output)
+
+stdBetaOutput = data.frame(stdCoef)
+stdSeOutput = data.frame(stdSe)
+
+coef_output = data.frame(coef_output, stdBetaOutput)
+se_output = data.frame(se_output, stdSeOutput)
+
+# Figure out the degrees of freedom 
+
+#coefsAll = mi.meld(q = coef_output, se = se_output)
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  z_stat = coefs1/ses1
+  p = 2*pnorm(-abs(z_stat))
+  return(data.frame(coefs1, ses1, z_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+######################################################################################
+Try a difference score with a linear model
+######################################################################################
+
+Try to get this data set back to wide format 
+Then getting difference scores and getting rid of old pre and post for imputation
+```{r}
+datAdultAnalysisWide = reshape(data = datAdultAnalysis, v.names = c("RASTotalScore", "INQTotalScore", "SSMITotalScore", "SISTotalScore"), timevar = "Time", direction = "wide", idvar = "ID")
+
+######RAS######
+
+datAdultAnalysisWide$DiffRAS = datAdultAnalysisWide$RASTotalScore.1 - datAdultAnalysisWide$RASTotalScore.0
+
+datAdultAnalysisWide$DiffRAS = datAdultAnalysisWide$RASTotalScore.1 - datAdultAnalysisWide$RASTotalScore.0
+
+datAdultAnalysisWide$RASTotalScore.0 = NULL
+datAdultAnalysisWide$RASTotalScore.1 = NULL
+
+######INQ######
+
+datAdultAnalysisWide$DiffINQ = datAdultAnalysisWide$INQTotalScore.1 - datAdultAnalysisWide$INQTotalScore.0
+
+datAdultAnalysisWide$DiffINQ = datAdultAnalysisWide$INQTotalScore.1 - datAdultAnalysisWide$INQTotalScore.0
+
+datAdultAnalysisWide$INQTotalScore.0 = NULL
+datAdultAnalysisWide$INQTotalScore.1 = NULL
+
+######SSMI######
+
+datAdultAnalysisWide$DiffSSMI = datAdultAnalysisWide$SSMITotalScore.1 - datAdultAnalysisWide$SSMITotalScore.0
+
+datAdultAnalysisWide$DiffSSMI = datAdultAnalysisWide$SSMITotalScore.1 - datAdultAnalysisWide$SSMITotalScore.0
+
+datAdultAnalysisWide$SSMITotalScore.0 = NULL
+datAdultAnalysisWide$SSMITotalScore.1 = NULL
+
+######SIS######
+
+datAdultAnalysisWide$DiffSIS = datAdultAnalysisWide$SISTotalScore.1 - datAdultAnalysisWide$SISTotalScore.0
+
+datAdultAnalysisWide$DiffSIS = datAdultAnalysisWide$SISTotalScore.1 - datAdultAnalysisWide$SISTotalScore.0
+
+datAdultAnalysisWide$SISTotalScore.0 = NULL
+datAdultAnalysisWide$SISTotalScore.1 = NULL
+
+
+```
+Now impute for wide format for difference models
+```{r}
+m = 10
+datAdultAnalysisImputeWide = amelia(m = m, datAdultAnalysisWide, noms = c("Gender", "Race", "Edu", "SexualOrientation", "RelationshipStatus", "Employment"), idvars = c("ID", "Treatment"))
+
+summary(datAdultAnalysisImputeWide)
+
+compare.density(datAdultAnalysisImputeWide, var = "DiffRAS")
+compare.density(datAdultAnalysisImputeWide, var = "DiffINQ")
+compare.density(datAdultAnalysisImputeWide, var = "DiffSSMI")
+compare.density(datAdultAnalysisImputeWide, var = "DiffSIS")
+
+datAnalysisAllWide = lapply(1:m, function(x){datAdultAnalysisImputeWide$imputations[[x]]})
+head(datAdultAnalysisImputeWide[[1]])
+```
+#######################################
+Linear difference models for all treatments
+RAS
+#######################################
+```{r}
+output = NULL
+outputSummary = NULL
+coef_output = NULL
+se_output = NULL
+df
+for(i in 1:m){
+  output[[i]] = lm(DiffRAS ~ factor(Treatment) + Age + Gender + SexualOrientation + RelationshipStatus + Edu + Employment, data = datAnalysisAllWide[[i]])
+  outputSummary[[i]] = summary(output[[i]])
+  coef_output[[i]] = outputSummary[[i]]$coefficients[,1]
+  se_output[[i]] = outputSummary[[i]]$coefficients[,2]
+}
+coef_output = data.frame(t(data.frame(coef_output))) 
+se_output = data.frame(t(data.frame(se_output)))
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  t_stat = coefs1/ses1
+  p = 2*(pt(-abs(t_stat), df = outputSummary[[2]]$df[2]))
+  return(data.frame(coefs1, ses1, t_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+
+
+#######################################
+Linear difference models for all treatments
+INQ
+#######################################
+```{r}
+output = NULL
+outputSummary = NULL
+coef_output = NULL
+se_output = NULL
+df
+for(i in 1:m){
+  output[[i]] = lm(DiffINQ ~ factor(Treatment), data = datAnalysisAllWide[[i]])
+  outputSummary[[i]] = summary(output[[i]])
+  coef_output[[i]] = outputSummary[[i]]$coefficients[,1]
+  se_output[[i]] = outputSummary[[i]]$coefficients[,2]
+}
+coef_output = data.frame(t(data.frame(coef_output))) 
+se_output = data.frame(t(data.frame(se_output)))
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  t_stat = coefs1/ses1
+  p = 2*(pt(-abs(t_stat), df = outputSummary[[2]]$df[2]))
+  return(data.frame(coefs1, ses1, t_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+#######################################
+Linear difference models for all treatments
+SSMI
+#######################################
+```{r}
+output = NULL
+outputSummary = NULL
+coef_output = NULL
+se_output = NULL
+df
+for(i in 1:m){
+  output[[i]] = lm(DiffSSMI ~ factor(Treatment), data = datAnalysisAllWide[[i]])
+  outputSummary[[i]] = summary(output[[i]])
+  coef_output[[i]] = outputSummary[[i]]$coefficients[,1]
+  se_output[[i]] = outputSummary[[i]]$coefficients[,2]
+}
+coef_output = data.frame(t(data.frame(coef_output))) 
+se_output = data.frame(t(data.frame(se_output)))
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  t_stat = coefs1/ses1
+  p = 2*(pt(-abs(t_stat), df = outputSummary[[2]]$df[2]))
+  return(data.frame(coefs1, ses1, t_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+#######################################
+Linear difference models for all treatments
+SIS
+#######################################
+```{r}
+output = NULL
+outputSummary = NULL
+coef_output = NULL
+se_output = NULL
+df
+for(i in 1:m){
+  output[[i]] = lm(DiffSIS ~ factor(Treatment), data = datAnalysisAllWide[[i]])
+  outputSummary[[i]] = summary(output[[i]])
+  coef_output[[i]] = outputSummary[[i]]$coefficients[,1]
+  se_output[[i]] = outputSummary[[i]]$coefficients[,2]
+}
+coef_output = data.frame(t(data.frame(coef_output))) 
+se_output = data.frame(t(data.frame(se_output)))
+
+meldAllT_stat = function(x,y){
+  coefsAll = mi.meld(q = x, se = y)
+  coefs1 = t(data.frame(coefsAll$q.mi))
+  ses1 = t(data.frame(coefsAll$se.mi))
+  t_stat = coefs1/ses1
+  p = 2*(pt(-abs(t_stat), df = outputSummary[[2]]$df[2]))
+  return(data.frame(coefs1, ses1, t_stat, p))
+}
+
+results = meldAllT_stat(coef_output, se_output)
+round(results,3)
+```
+
+First I need to create a treatment indicator for each 
+So I need to stack each of the difference scores on top of each other
+What is I stack them first, then create a treatment indicator using the length of each treatement
+
+
+
 ################################################
 Multilevel with treatment only with imputed data
 ################################################
@@ -560,6 +1242,8 @@ for(i in 1:m){
   datAnalysisT2[[i]] = subset(datAnalysisAll[[i]], Treatment == 2)
   datAnalysisT3[[i]] = subset(datAnalysisAll[[i]], Treatment == 3)
 }
+
+
 
 ```
 ###############
@@ -1247,644 +1931,6 @@ round(results,3)
 Need to get the pre and post scores for each variable separated then take the difference, then get the sd for them and divide by N
 
 ############################
-T.tests with imputed data
-############################
-
-#############################
-RAS Pre and Post, Treatment 1
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-datAnalysisAll1 = datAnalysisAll[[1]]
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 1)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 1)
-  PreVar[[i]] = PreAll[[i]]$RASTotalScore
-  PostVar[[i]] = PostAll[[i]]$RASTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- mean(PreVar[[i]]))
-  se_output[[i]] = sqrt(sd(PreVar[[i]]-PostVar[[i]])^2/(n))
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-RAS Pre and Post, Treatment 2
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-datAnalysisAll1 = datAnalysisAll[[1]]
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 2)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 2)
-  PreVar[[i]] = PreAll[[i]]$RASTotalScore
-  PostVar[[i]] = PostAll[[i]]$RASTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3)
-
-## Generate a cohen's D
-
-
-###################
-
-```
-So we probably want to compare treatment one to treatment two
-So are difference scores different from each other for treatment 2 versus treatment 1
-```{r}
-PreAllT1 = NULL
-PostAllT1 = NULL
-PreVarT1 = NULL
-PostVarT1 = NULL
-PreAllT2 = NULL
-PostAllT2 = NULL
-PreVarT2 = NULL
-PostVarT2 = NULL
-coef_output = NULL
-DiffMeansT1 = NULL
-DiffMeansT2 = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAllT1[[i]] = subset(datAnalysisAll[[i]], Time == 0 & Treatment == 1)
-  PostAllT1[[i]] = subset(datAnalysisAll[[i]], Time == 1 & Treatment == 1)
-  #PreAllT2[[i]] = subset(datAnalysisAll[[i]], Time == 0 & Treatment == 2)
-  #PostAllT2[[i]] = subset(datAnalysisAll[[i]], Time == 1 & Treatment == 2)
-  PreVarT1[[i]] = PreAllT1[[i]]$SISTotalScore
-  PostVarT1[[i]] = PostAllT1[[i]]$SISTotalScore
-  #PreVarT2[[i]] = PreAllT2[[i]]$SISTotalScore
-  #PostVarT2[[i]] = PostAllT2[[i]]$SISTotalScore
-  DiffMeansT1[[i]] = mean(PostVarT1[[i]]- PreVarT1[[i]])
-  #DiffMeansT2[[i]] = mean(PostVarT2[[i]]- PreVarT2[[i]])
-  coef_output[[i]] = mean(DiffMeansT2[[i]]- DiffMeansT1[[i]])
-  se_output[[i]] = sd(DiffMeansT2[[i]]-DiffMeansT1[[i]])/sqrt(n)
-}
-
-coef_output = data.frame(DiffMeansT1)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-
-```
-
-#############################
-RAS Pre and Post, Treatment 3
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-datAnalysisAll1 = datAnalysisAll[[1]]
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 3)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 3)
-  PreVar[[i]] = PreAll[[i]]$RASTotalScore
-  PostVar[[i]] = PostAll[[i]]$RASTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-   d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-INQ Pre and Post, Treatment 1
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 1)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 1)
-  PreVar[[i]] = PreAll[[i]]$INQTotalScore
-  PostVar[[i]] = PostAll[[i]]$INQTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-INQ Pre and Post, Treatment 2
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 2)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 2)
-  PreVar[[i]] = PreAll[[i]]$INQTotalScore
-  PostVar[[i]] = PostAll[[i]]$INQTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-INQ Pre and Post, Treatment 3
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 3)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 3)
-  PreVar[[i]] = PreAll[[i]]$INQTotalScore
-  PostVar[[i]] = PostAll[[i]]$INQTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-SSMI Pre and Post, Treatment 1
-Not significant
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 1)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 1)
-  PreVar[[i]] = PreAll[[i]]$SSMITotalScore
-  PostVar[[i]] = PostAll[[i]]$SSMITotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-SSMI Pre and Post, Treatment 2
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 2)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 2)
-  PreVar[[i]] = PreAll[[i]]$SSMITotalScore
-  PostVar[[i]] = PostAll[[i]]$SSMITotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-SSMI Pre and Post, Treatment 3
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 3)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 3)
-  PreVar[[i]] = PreAll[[i]]$SSMITotalScore
-  PostVar[[i]] = PostAll[[i]]$SSMITotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-SIS Pre and Post, Treatment 1
-Not significant
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 1)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 1)
-  PreVar[[i]] = PreAll[[i]]$SISTotalScore
-  PostVar[[i]] = PostAll[[i]]$SISTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-#############################
-SIS Pre and Post, Treatment 2
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 2)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 2)
-  PreVar[[i]] = PreAll[[i]]$SISTotalScore
-  PostVar[[i]] = PostAll[[i]]$SISTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-```
-#############################
-SIS Pre and Post, Treatment 3
-```{r}
-T_Test = NULL
-PreAll = NULL
-PostAll = NULL
-PreVar = NULL
-PostVar = NULL
-coef_output = NULL
-# I think we divide by two, because it is the sample size for each group?
-n = dim(datAnalysisAll[[1]])[1]/2
-se_output = NULL
-
-
-for(i in 1:m){
-  PreAll[[i]] = subset(datAnalysisAll[[i]], Time == 0)
-  PreAll[[i]] = subset(PreAll[[i]], Treatment == 3)
-  PostAll[[i]] = subset(datAnalysisAll[[i]], Time == 1)
-  PostAll[[i]] = subset(PostAll[[i]], Treatment == 3)
-  PreVar[[i]] = PreAll[[i]]$SISTotalScore
-  PostVar[[i]] = PostAll[[i]]$SISTotalScore
-  coef_output[[i]] = mean(PostVar[[i]]- PreVar[[i]])
-  se_output[[i]] = sd(PreVar[[i]]-PostVar[[i]])/sqrt(n)
-}
-
-
-coef_output = data.frame(coef_output)
-se_output = data.frame(se_output)
-
-# Figure out the degrees of freedom 
-
-
-meldAllT_stat = function(x,y){
-  coefsAll = mi.meld(q = x, se = y)
-  coefs1 = t(data.frame(coefsAll$q.mi))
-  ses1 = t(data.frame(coefsAll$se.mi))
-  t_stat = coefs1/ses1
-  p = 2*pt(-abs(t_stat), df = n-1)
-  d = t_stat/sqrt(n)
-  return(data.frame(coefs1, ses1, t_stat, d, p))
-}
-
-results = meldAllT_stat(coef_output, se_output)
-round(results,3) 
-###################
-
-```
-
-
-
-
-
-############################
 Multilevel models with imputed data
 ###############################
 Now run model with just treatment and see what we have
@@ -1928,7 +1974,7 @@ meldAllT_stat = function(x,y){
   return(data.frame(coefs1, ses1, z_stat, p))
 }
 
-results = meldAllT_stat(coef_output, se_output); results
+results = meldAllT_stat(coef_output, se_output)
 round(results,3) 
 ```
 RAS constrasts
